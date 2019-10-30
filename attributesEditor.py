@@ -23,7 +23,7 @@
 """
 from qgis.PyQt.QtCore import QSettings, QTranslator, QCoreApplication, Qt, QSortFilterProxyModel, QModelIndex
 from qgis.PyQt.QtGui import QIcon
-from qgis.PyQt.QtWidgets import QAction, QTableView
+from qgis.PyQt.QtWidgets import QAction, QTableView, QApplication, QTableWidgetItem
 from qgis.core import QgsProject, QgsMapLayer, QgsVectorLayer
 # Initialize Qt resources from file resources.py
 from .resources import *
@@ -100,7 +100,7 @@ class AttributesEditor:
         callback,
         enabled_flag=True,
         add_to_menu=True,
-        add_to_toolbar=True,
+        add_to_toolbar=None,
         status_tip=None,
         whats_this=None,
         parent=None):
@@ -158,7 +158,7 @@ class AttributesEditor:
             self.toolbar.addAction(action)
 
         if add_to_menu:
-            self.iface.addPluginToMenu(
+            self.iface.addPluginToVectorMenu(
                 self.menu,
                 action)
 
@@ -202,7 +202,7 @@ class AttributesEditor:
         #print "** UNLOAD attributesEditor"
 
         for action in self.actions:
-            self.iface.removePluginMenu(
+            self.iface.removePluginVectorMenu(
                 self.tr(u'&Attributes Editor'),
                 action)
             self.iface.removeToolBarIcon(action)
@@ -246,7 +246,6 @@ class AttributesEditor:
             #self.iface.mapCanvas().currentLayer().selectionChanged.connect(self.featureSelectionChanged)
 
 
-
     def initTableView(self, tableView, features):
         #currentLayerからすべての地物の属性、ID、ヘッダを取得してtableViewに渡す
         attributesList = []
@@ -276,7 +275,7 @@ class AttributesEditor:
         tableView.pressed.connect(self.verticalHeaderClicked)
         verticalHeader.sectionClicked.connect(self.verticalHeaderClicked)
         verticalHeader.sectionDoubleClicked.connect(self.verticalHeaderDoubleClicked)
-
+    
     #ソート機能のためのproxyModel
     def makeProxyModel(self, model):
         proxyModel = QSortFilterProxyModel()
@@ -334,23 +333,3 @@ class AttributesEditor:
         tableView = self.dockwidget.tableView
         for id in selectedFeatureIds:
             tableView.selectRow(id)
-
-
-    '''
-    def featureSelected(self):
-        currentLayer = CurrentLayer(self.iface)
-        featureIds = currentLayer.getSelectedFeatureIds()
-        selections = []
-
-        tableView = self.dockwidget.tableView
-        model = tableView.model()
-        headerCount = model.rowCount()
-
-        for featureId in featureIds:
-            for i in range(headerCount):
-                headerData = model.headerData(i, Qt.Vertical)
-                if featureId == headerData:
-                    selections.append(i)
-        for selection in selections:
-            tableView.selectRow(selection)
-    '''
