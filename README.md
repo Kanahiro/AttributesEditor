@@ -7,6 +7,3 @@ QGIS plugin to show and edit Attributes of features easily.
 # Usage
 ![QGIS/AttributesEditor](./img/usage.png)
 - You can show and edit attributes of features in only active layer.
-
-# Contact
-kanahiro.iguchi@gmail.com
